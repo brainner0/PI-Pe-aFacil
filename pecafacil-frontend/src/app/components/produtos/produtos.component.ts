@@ -12,7 +12,18 @@ import { Produto, ProdutoService } from '../../services/produto.service';
 })
 export class ProdutosComponent implements OnInit {
   produtos: Produto[] = [];
-  novoProduto: Produto = { nome: '', descricao: '', preco: 0, quantidade: 0, fornecedor: '' };
+  novoProduto: Produto = { nome: '', descricao: '', preco: undefined as any, quantidade: undefined as any, fornecedor: '' };
+
+  filtro: string = ''; // texto digitado na barra de pesquisa
+
+get produtosFiltrados(): Produto[] {
+  return this.produtos.filter(p =>
+    p.nome.toLowerCase().includes(this.filtro.toLowerCase()) ||
+    p.descricao.toLowerCase().includes(this.filtro.toLowerCase()) ||
+    p.fornecedor.toLowerCase().includes(this.filtro.toLowerCase())
+  );
+}
+
 
   constructor(private produtoService: ProdutoService) {}
 
@@ -30,7 +41,7 @@ export class ProdutosComponent implements OnInit {
   salvarProduto(): void {
     this.produtoService.salvarProduto(this.novoProduto).subscribe({
       next: () => {
-        this.novoProduto = { nome: '', descricao: '', preco: 0, quantidade: 0, fornecedor: '' };
+        this.novoProduto = { nome: '', descricao: '', preco: undefined as any, quantidade: undefined as any, fornecedor: '' };
         this.carregarProdutos();
       },
       error: (err) => console.error('Erro ao salvar produto', err)
