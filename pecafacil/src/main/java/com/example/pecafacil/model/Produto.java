@@ -1,5 +1,7 @@
 package com.example.pecafacil.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -14,7 +16,15 @@ public class Produto {
     private String descricao;
     private double preco;
     private int quantidade;
-    private String fornecedor; // 👈 NOVO CAMPO
+    @Column(nullable = false)
+    private int estoqueMinimo = 0;
+    private String fornecedor; 
+    private String local; // Ex: "A32"
+    @Column(name = "data_ultima_entrada")
+    private LocalDateTime dataUltimaEntrada;
+
+    @Column(name = "data_ultima_saida")
+    private LocalDateTime dataUltimaSaida;
 
     public Produto() {}
 
@@ -24,6 +34,23 @@ public class Produto {
         this.preco = preco;
         this.quantidade = quantidade;
         this.fornecedor = fornecedor;
+    }
+
+    // Getters e Setters novos 👇
+    public LocalDateTime getDataUltimaEntrada() {
+        return dataUltimaEntrada;
+    }
+
+    public void setDataUltimaEntrada(LocalDateTime dataUltimaEntrada) {
+        this.dataUltimaEntrada = dataUltimaEntrada;
+    }
+
+    public LocalDateTime getDataUltimaSaida() {
+        return dataUltimaSaida;
+    }
+
+    public void setDataUltimaSaida(LocalDateTime dataUltimaSaida) {
+        this.dataUltimaSaida = dataUltimaSaida;
     }
 
     public Long getId() { return id; }
@@ -43,4 +70,10 @@ public class Produto {
 
     public String getFornecedor() { return fornecedor; }
     public void setFornecedor(String fornecedor) { this.fornecedor = fornecedor; }
+
+    public int getEstoqueMinimo() {return estoqueMinimo;}
+    public void setEstoqueMinimo(int estoqueMinimo) {this.estoqueMinimo = estoqueMinimo;}
+
+    public String getLocal() { return local; }
+    public void setLocal(String local) { this.local = local; }
 }

@@ -154,3 +154,81 @@ h2 {
   color: rgba(0, 0, 0, 0.5);
   font-style: italic;
 }
+/* 🔹 Botão da seta de expandir/colapsar */
+/* 🔹 Célula da seta */
+.seta-cell {
+  width: 30px;
+  text-align: center;
+}
+
+/* 🔸 Botão da seta minimalista */
+.seta {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #444;
+  transition: transform 0.2s ease;
+  padding: 0;
+}
+
+.seta:hover {
+  color: #007bff;
+  transform: scale(1.1);
+}
+
+/* Linha expandida */
+.detalhes-row td {
+  background-color: #f9f9f9;
+  border-top: 1px solid #ddd;
+}
+
+.detalhes {
+  padding: 10px 15px;
+  text-align: left;
+}
+
+.detalhes p {
+  margin: 4px 0;
+}/* 🔽 Área de detalhes expandida (ao clicar na seta) */
+.detalhes {
+  background: #f9f9f9;
+  border-left: 3px solid #007bff;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 5px 0;
+  animation: expandir 0.3s ease-in-out;
+}
+
+.detalhes p {
+  margin: 4px 0;
+  color: #333;
+}
+
+/* 🔘 Área dos botões dentro dos detalhes */
+.acoes {
+  margin-top: 10px;
+  text-align: right;
+}
+
+/* 🔄 Animação suave ao expandir */
+@keyframes expandir {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* 🚨 Alerta de baixo estoque */
+.baixo-estoque {
+  background-color: #ffe5e5;
+  color: #b30000;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+
+

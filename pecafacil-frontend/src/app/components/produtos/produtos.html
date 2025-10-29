@@ -2,18 +2,23 @@
   <h2>📦 Cadastro de Produtos</h2>
 
   <!--  Barra de Pesquisa -->
-  <div class="search-bar">
-    <input
-      type="text"
-      placeholder=" Buscar produto por nome, descrição ou fornecedor..."
-      [(ngModel)]="filtro"
-      class="search-input"
-    />
-    <button class="clear-btn" *ngIf="filtro" (click)="filtro = ''">❌ Limpar</button>
-  </div>
+<div class="search-bar">
+  <input
+    type="text"
+    [(ngModel)]="filtro"
+    name="filtro"
+    placeholder="🔎 Buscar por nome, descrição, fornecedor ou ID..."
+    class="search-input"
+    autocomplete="off"
+  />
+</div>
+
 
   <!-- 📝 Formulário -->
   <form (ngSubmit)="salvarProduto()" #produtoForm="ngForm" class="produto-form">
+
+
+    
 
   <input type="text"
          placeholder=" Nome do produto"
@@ -35,6 +40,13 @@
          min="0"
          required>
 
+    <input type="number"
+     placeholder="Estoque mínimo"
+      [(ngModel)]="novoProduto.estoqueMinimo"
+       name="estoqueMinimo"
+        required>
+
+
   <input type="number"
          placeholder=" Informe a quantidade em estoque"
          [(ngModel)]="novoProduto.quantidade"
@@ -42,11 +54,20 @@
          min="0"
          required>
 
+  
+
   <input type="text"
          placeholder=" Nome do fornecedor"
          [(ngModel)]="novoProduto.fornecedor"
          name="fornecedor"
          required>
+    
+  <input type="text"
+       placeholder="Local de armazenamento (ex: A32)"
+       [(ngModel)]="novoProduto.local"
+       name="local"
+       required>
+
 
   <button type="submit" class="btn-salvar"> Salvar</button>
 </form>
@@ -54,37 +75,58 @@
 
 
   <!-- 📋 Tabela -->
-  <table class="produtos-table" *ngIf="produtosFiltrados.length > 0; else semProdutos">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Descrição</th>
-        <th>Preço</th>
-        <th>Quantidade</th>
-        <th>Fornecedor</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let p of produtosFiltrados">
-        <td>{{ p.id }}</td>
-        <td>{{ p.nome }}</td>
-        <td>{{ p.descricao }}</td>
-        <td>{{ p.preco | currency:'BRL' }}</td>
-        <td>{{ p.quantidade }}</td>
-        <td>{{ p.fornecedor }}</td>
-        <td>
-          <button class="btn entrada" (click)="entrada(p.id!)">➕ Entrada</button>
-          <button class="btn saida" (click)="saida(p.id!)">➖ Saída</button>
-          <button class="btn excluir" (click)="excluir(p.id!)">🗑 Excluir</button>
+  <table class="produtos-table">
+  <thead>
+  <tr>
+    <th></th> <!-- Coluna da seta -->
+    <th>Local</th>
+    <th>Nome</th>
+    <th>Descrição</th>
+    <th>Preço</th>
+    <th>Quantidade</th>
+    <th>Fornecedor</th>
+  </tr>
+</thead>
+
+<tbody>
+  <ng-container *ngFor="let p of produtosFiltrados">
+    <tr>
+      <td class="seta-cell">
+        <button class="seta" (click)="p.expandido = !p.expandido">
+          <span [innerHTML]="p.expandido ? '&#9660;' : '&#9654;'"></span>
+        </button>
+      </td>
+      <td>{{ p.local || '—' }}</td>
+      <td>{{ p.nome }}</td>
+      <td>{{ p.descricao }}</td>
+      <td>{{ p.preco | currency:'BRL' }}</td>
+      <td [ngClass]="{ 'baixo-estoque': p.quantidade < (p.estoqueMinimo || 0) }">
+        {{ p.quantidade }}
+      </td>
+      <td>{{ p.fornecedor }}</td>
+    </tr>
+
+      <!-- 🔽 Linha de detalhes (aparece ao clicar na seta) -->
+      <tr *ngIf="p.expandido" class="detalhes-row">
+        <td colspan="7">
+          <div class="detalhes">
+            <p><strong>Descrição:</strong> {{ p.descricao }}</p>
+            <p><strong>Fornecedor:</strong> {{ p.fornecedor }}</p>
+            <p><strong>Última Entrada:</strong> 
+              {{ p.dataUltimaEntrada ? (p.dataUltimaEntrada | date:'dd/MM/yyyy HH:mm') : '—' }}
+            </p>
+            <p><strong>Última Saída:</strong> 
+              {{ p.dataUltimaSaida ? (p.dataUltimaSaida | date:'dd/MM/yyyy HH:mm') : '—' }}
+            </p>
+
+            <div class="acoes">
+              <button class="btn entrada" (click)="entrada(p.id!)">Entrada</button>
+              <button class="btn saida" (click)="saida(p.id!)">Saída</button>
+              <button class="btn excluir" (click)="excluir(p.id!)">Excluir</button>
+            </div>
+          </div>
         </td>
       </tr>
-    </tbody>
-  </table>
-
-  <!-- 🕳 Caso não haja produtos -->
-  <ng-template #semProdutos>
-    <p class="sem-produtos">Nenhum produto encontrado.</p>
-  </ng-template>
-</div>
+    </ng-container>
+  </tbody>
+</table>

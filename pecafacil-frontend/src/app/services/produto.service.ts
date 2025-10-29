@@ -9,7 +9,13 @@ export interface Produto {
   preco: number;
   quantidade: number;
   fornecedor: string;
+   local?: string;
+  dataUltimaEntrada?: string;
+  dataUltimaSaida?: string;
+  estoqueMinimo?: number;
+   expandido?: boolean;
 }
+
 
 @Injectable({
   providedIn: 'root'

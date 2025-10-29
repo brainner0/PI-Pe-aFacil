@@ -13,16 +13,44 @@ import { Produto, ProdutoService } from '../../services/produto.service';
 export class ProdutosComponent implements OnInit {
   produtos: Produto[] = [];
   novoProduto: Produto = { nome: '', descricao: '', preco: undefined as any, quantidade: undefined as any, fornecedor: '' };
-
-  filtro: string = ''; // texto digitado na barra de pesquisa
+// 🔍 Campo de busca
+filtro: string = '';
 
 get produtosFiltrados(): Produto[] {
-  return this.produtos.filter(p =>
-    p.nome.toLowerCase().includes(this.filtro.toLowerCase()) ||
-    p.descricao.toLowerCase().includes(this.filtro.toLowerCase()) ||
-    p.fornecedor.toLowerCase().includes(this.filtro.toLowerCase())
-  );
+  const termo = this.filtro
+    .normalize('NFD') // remove acentos
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .trim();
+
+  if (!termo) return this.produtos;
+
+  return this.produtos.filter(p => {
+    const id = (p.id ?? '').toString();
+    const nome = (p.nome ?? '')
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .toLowerCase();
+    const descricao = (p.descricao ?? '')
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .toLowerCase();
+    const fornecedor = (p.fornecedor ?? '')
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .toLowerCase();
+
+    return (
+      id.includes(termo) ||
+      nome.includes(termo) ||
+      descricao.includes(termo) ||
+      fornecedor.includes(termo)
+    );
+  });
 }
+
+
+
 
 
   constructor(private produtoService: ProdutoService) {}
