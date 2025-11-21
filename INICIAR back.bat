@@ -22,28 +22,10 @@ if not exist "%BACKEND%" (
     exit /b
 )
 
-if not exist "%FRONTEND%" (
-    echo ERRO: Pasta do frontend nao encontrada:
-    echo %FRONTEND%
-    pause
-    exit /b
-)
-
-REM === Abrir VS Code na raiz do projeto ===
-echo Abrindo VS Code...
-start "" code "%SCRIPT_DIR%"
 
 REM === Subir o backend (Spring Boot) ===
 echo Iniciando backend...
 start "" cmd /k "cd /d "%BACKEND%" && mvn spring-boot:run"
-
-REM === Subir o frontend (Angular) ===
-echo Iniciando frontend...
-start "" cmd /k "cd /d "%FRONTEND%" && npm start"
-
-REM === Abrir navegador ===
-echo Abrindo navegador...
-start http://localhost:4200
 
 echo.
 echo Projeto iniciado com sucesso.
