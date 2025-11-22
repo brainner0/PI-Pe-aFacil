@@ -1,0 +1,96 @@
+/* NAVBAR BASE */
+.navbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 24px !important;
+
+  width: 100%;
+  height: 60px;
+  background-color: #e8f0ff;
+  border-bottom: 1px solid #d4dff3;
+  padding: 0 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+
+/* ESQUERDA */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0; /* nunca encolhe */
+}
+
+/* LOGO */
+.logo {
+  width: 34px;
+  height: 34px;
+}
+
+.system-name {
+  font-size: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #1a2a44;
+}
+
+/* CENTRO – MENU */
+.nav-menu {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  flex: 1;               /* Ocupa todo o espaço central */
+  justify-content: center;
+  min-width: 0;          /* 🔥 Impede que o menu force os lados */
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: #1a2a44;
+  font-size: 15px;
+  white-space: nowrap;   /* Não quebra */
+}
+
+.nav-menu a:hover {
+  color: #2d4d89;
+}
+
+/* DIREITA */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  flex-shrink: 0;       /* 🔥 Nunca encolhe */
+  white-space: nowrap;  /* 🔥 Nunca quebra */
+}
+
+.user-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a2a44;
+}
+
+/* BOTÃO SAIR */
+.logout-btn {
+  background: #d9e6ff;
+  border: 1px solid #b7c8e9;
+  color: #1a2a44;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: .2s;
+  white-space: nowrap;
+}
+
+.logout-btn:hover {
+  background: #bcd2ff;
+  border-color: #8faee6;
+}

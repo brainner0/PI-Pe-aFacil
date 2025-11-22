@@ -13,63 +13,66 @@ export interface AuthResponse {
 })
 export class AuthService {
 
-  // Ajuste para usar environment se quiser
+  // ROTA BASE CORRETA
   private apiUrl = 'http://localhost:8080/api/auth';
 
   constructor(private http: HttpClient) {}
 
+  // LOGIN
   login(username: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, {
       username,
       password
     }).pipe(
-      tap(res => {
-        this.saveSession(res);
-      })
+      tap(res => this.saveSession(res))
     );
   }
 
+  // REGISTRO SIMPLES
   register(username: string, password: string, role: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, {
       username,
       password,
       role
     }).pipe(
-      tap(res => {
-        this.saveSession(res);
-      })
+      tap(res => this.saveSession(res))
     );
   }
 
+  // REGISTRO COMPLETO  ✔ CORRIGIDO
+  registerComplete(data: any) {
+    return this.http.post(`${this.apiUrl}/register`, data);
+  }
+
+  // SALVAR TOKEN
   private saveSession(auth: AuthResponse): void {
     localStorage.setItem('token', auth.token);
     localStorage.setItem('username', auth.username);
     localStorage.setItem('role', auth.role);
   }
 
+  // LOGOUT
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
     localStorage.removeItem('role');
   }
 
-  getToken(): string | null {
-    return localStorage.getItem('token');
+  // CONSULTAR CPF  ✔ CORRIGIDO
+  verificarCpf(cpf: string) {
+    return this.http.get<boolean>(`${this.apiUrl}/verificar-cpf/${cpf}`);
   }
 
-  getRole(): string | null {
-    return localStorage.getItem('role');
+  // CONSULTAR USERNAME ✔ CORRIGIDO
+  verificarUsername(username: string) {
+    return this.http.get<boolean>(`${this.apiUrl}/verificar-username/${username}`);
   }
 
-  getUsername(): string | null {
-    return localStorage.getItem('username');
-  }
+  // GETTERS
+  getToken(): string | null { return localStorage.getItem('token'); }
+  getRole(): string | null { return localStorage.getItem('role'); }
+  getUsername(): string | null { return localStorage.getItem('username'); }
 
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-
-  isAdmin(): boolean {
-    return this.getRole() === 'ROLE_ADMIN';
-  }
+  isLoggedIn(): boolean { return !!this.getToken(); }
+  isAdmin(): boolean { return this.getRole() === 'ROLE_ADMIN'; }
 }
