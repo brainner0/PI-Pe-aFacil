@@ -30,15 +30,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(cs -> cs.disable())
-            .cors(Customizer.withDefaults())   // 👈 habilita CORS usando o bean corsConfigurationSource
-            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // login e registro são públicos
-                .anyRequest().authenticated()
-            )
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .csrf(cs -> cs.disable())
+                .cors(Customizer.withDefaults())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+
+                        // ROTAS LIBERADAS
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/register",
+                                "/api/auth/verificar-cpf/**",
+                                "/api/auth/verificar-username/**"
+                        ).permitAll()
+
+                        // TODAS AS OUTRAS PRECISAM DE TOKEN
+                        .anyRequest().authenticated()
+                )
+                .authenticationProvider(authenticationProvider())
+
+                // FILTRO JWT ANTES DO USERNAME/PASSWORD FILTER
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

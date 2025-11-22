@@ -1,0 +1,21 @@
+<nav class="navbar">
+    
+  <div class="nav-left">
+    <img src="assets/logo-pecafacil.png" class="logo">
+    <span class="system-name">PecaFácil</span>
+  </div>
+
+  <ul class="nav-menu">
+    <li><a routerLink="/produtos">Produtos</a></li>
+    <li><a routerLink="/clientes">Clientes</a></li>
+    <li><a routerLink="/pecas">Peças</a></li>
+    <li><a routerLink="/ordens">Ordens</a></li>
+    <li><a routerLink="/config">Configurações</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <span class="user-label">Olá, {{ username }}</span>
+    <button class="logout-btn" (click)="logout()">Sair</button>
+  </div>
+
+</nav>

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Produto, ProdutoService } from '../../services/produto.service';
+import { AuthService } from '../../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-produtos',
@@ -11,52 +13,28 @@ import { Produto, ProdutoService } from '../../services/produto.service';
   styleUrls: ['./produtos.css']
 })
 export class ProdutosComponent implements OnInit {
+  
+  username: string | null = null;  // ← Agora o template acessa isso!
+
   produtos: Produto[] = [];
   novoProduto: Produto = { nome: '', descricao: '', preco: undefined as any, quantidade: undefined as any, fornecedor: '' };
-// 🔍 Campo de busca
-filtro: string = '';
 
-get produtosFiltrados(): Produto[] {
-  const termo = this.filtro
-    .normalize('NFD') // remove acentos
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase()
-    .trim();
+  filtro: string = '';
 
-  if (!termo) return this.produtos;
-
-  return this.produtos.filter(p => {
-    const id = (p.id ?? '').toString();
-    const nome = (p.nome ?? '')
-      .normalize('NFD')
-      .replace(/\p{Diacritic}/gu, '')
-      .toLowerCase();
-    const descricao = (p.descricao ?? '')
-      .normalize('NFD')
-      .replace(/\p{Diacritic}/gu, '')
-      .toLowerCase();
-    const fornecedor = (p.fornecedor ?? '')
-      .normalize('NFD')
-      .replace(/\p{Diacritic}/gu, '')
-      .toLowerCase();
-
-    return (
-      id.includes(termo) ||
-      nome.includes(termo) ||
-      descricao.includes(termo) ||
-      fornecedor.includes(termo)
-    );
-  });
-}
-
-
-
-
-
-  constructor(private produtoService: ProdutoService) {}
+  constructor(
+    private produtoService: ProdutoService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    this.username = localStorage.getItem('username'); // ← Pegando do localStorage
     this.carregarProdutos();
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   carregarProdutos(): void {
@@ -64,6 +42,23 @@ get produtosFiltrados(): Produto[] {
       next: (data) => (this.produtos = data),
       error: (err) => console.error('Erro ao listar produtos', err)
     });
+  }
+
+  get produtosFiltrados() {
+    const termo = this.filtro
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .toLowerCase()
+      .trim();
+
+    if (!termo) return this.produtos;
+
+    return this.produtos.filter(p =>
+      (p.id ?? '').toString().includes(termo) ||
+      (p.nome ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().includes(termo) ||
+      (p.descricao ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().includes(termo) ||
+      (p.fornecedor ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().includes(termo)
+    );
   }
 
   salvarProduto(): void {
