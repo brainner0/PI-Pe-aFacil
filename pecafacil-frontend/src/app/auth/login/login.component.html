@@ -1,0 +1,59 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <!-- Cabeçalho com logo e título -->
+    <div class="auth-header">
+      <img
+        src="assets/logo-pecafacil.png"
+        alt="Logo PecaFácil"
+        class="auth-logo"
+      />
+      <div class="auth-title-group">
+        <h1>PecaFácil</h1>
+        <p>Faça login para acessar o sistema</p>
+      </div>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="auth-form">
+      <div class="form-group">
+        <label for="username">Usuário</label>
+        <input
+          id="username"
+          type="text"
+          name="username"
+          [(ngModel)]="username"
+          required
+          autocomplete="username"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input
+          id="password"
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          autocomplete="current-password"
+        />
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="loading || !loginForm.form.valid"
+        class="btn-primary"
+      >
+        {{ loading ? 'Entrando...' : 'Entrar' }}
+      </button>
+
+      <p class="error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </p>
+
+      <p class="link">
+        Não tem conta?
+        <a routerLink="/register">Cadastre-se</a>
+      </p>
+    </form>
+  </div>
+</div>
