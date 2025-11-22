@@ -1,0 +1,81 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <!-- Cabeçalho com logo e título -->
+    <header class="auth-header">
+      <img
+        src="assets/logo-pecafacil.png"
+        alt="Logo PecaFácil"
+        class="auth-logo"
+      />
+
+      <div class="auth-title-group">
+        <h1>Cadastro de Usuário</h1>
+        <p>Crie sua conta para acessar o PecaFácil</p>
+      </div>
+    </header>
+
+    <!-- Formulário de cadastro -->
+    <form
+      class="auth-form"
+      (ngSubmit)="onSubmit()"
+      #registerForm="ngForm"
+      novalidate
+    >
+      <div class="form-group">
+        <label for="username">Usuário</label>
+        <input
+          id="username"
+          type="text"
+          name="username"
+          [(ngModel)]="username"
+          required
+          autocomplete="username"
+          placeholder="Escolha um usuário"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input
+          id="password"
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          autocomplete="new-password"
+          placeholder="Crie uma senha"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="role">Perfil</label>
+        <select
+          id="role"
+          name="role"
+          [(ngModel)]="role"
+          required
+        >
+          <option value="ROLE_USER">Usuário</option>
+          <option value="ROLE_ADMIN">Administrador</option>
+        </select>
+      </div>
+
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="loading || !registerForm.form.valid"
+      >
+        {{ loading ? 'Cadastrando...' : 'Cadastrar' }}
+      </button>
+
+      <p class="error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </p>
+
+      <p class="link" *ngIf="!errorMessage">
+        Já tem conta?
+        <a routerLink="/login">Faça login</a>
+      </p>
+    </form>
+  </div>
+</div>
