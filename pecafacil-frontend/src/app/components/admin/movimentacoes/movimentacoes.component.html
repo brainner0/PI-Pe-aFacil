@@ -1,0 +1,30 @@
+<div class="container">
+
+  <h2>📦 Histórico de Movimentações</h2>
+
+  <table *ngIf="!loading" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Produto</th>
+        <th>Tipo</th>
+        <th>Qtd</th>
+        <th>Data</th>
+        <th>Usuário</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let m of lista">
+        <td>{{ m.id }}</td>
+        <td>{{ m.produtoNome }}</td>
+        <td>{{ m.tipo }}</td>
+        <td>{{ m.quantidade }}</td>
+        <td>{{ m.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ m.usuario }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="loading" class="loading">Carregando...</div>
+</div>

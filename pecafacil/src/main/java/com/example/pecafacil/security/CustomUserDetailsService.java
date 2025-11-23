@@ -16,16 +16,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
+        public UserDetails loadUserByUsername(String username)
+                throws UsernameNotFoundException {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                List.of(new SimpleGrantedAuthority(user.getRole().name()))
-        );
-    }
+        // role do banco já vem como ROLE_ADMIN ou ROLE_USER
+        String authority = user.getRole().name(); // OK
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .authorities(new SimpleGrantedAuthority(authority))
+                .build();
+        }
+
 }
