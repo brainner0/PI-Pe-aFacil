@@ -11,18 +11,38 @@ import { CommonModule } from '@angular/common';
 })
 export class NavbarComponent {
 
+  isMenuOpen = false;
+
   constructor(private router: Router) {}
 
-  get isLoggedIn(): boolean {
+  get isLoggedIn() {
     return !!localStorage.getItem('token');
   }
 
-  get username(): string | null {
+  get username() {
     return localStorage.getItem('username');
   }
 
-  logout(): void {
+  get role() {
+    return localStorage.getItem('role');
+  }
+
+  get isAdmin() {
+    return this.role === 'ROLE_ADMIN';
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  goTo(path: string) {
+    this.router.navigate([`/${path}`]);
+    this.isMenuOpen = false;
+  }
+
+  logout() {
     localStorage.clear();
+    this.isMenuOpen = false;
     this.router.navigate(['/login']);
   }
 }

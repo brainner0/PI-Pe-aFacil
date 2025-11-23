@@ -1,3 +1,7 @@
 main {
-  padding-top: 80px; /* compensa a altura da navbar */
+  margin-top: 70px;
+  display: block;
+  position: relative;
+  z-index: 1;
 }
+
