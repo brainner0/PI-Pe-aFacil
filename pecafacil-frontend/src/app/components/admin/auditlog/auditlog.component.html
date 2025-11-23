@@ -1,0 +1,90 @@
+<div class="container">
+  <!-- Header -->
+  <div class="audit-header">
+    <div class="header-content">
+      <h1>
+        <span class="header-icon">📜</span>
+        Auditoria do Sistema
+      </h1>
+      <p>Registro de todas as atividades e alterações no sistema</p>
+    </div>
+    
+    <!-- Barra de pesquisa -->
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Pesquisar por usuário, ação ou detalhes..."
+        [(ngModel)]="searchTerm">
+    </div>
+  </div>
+
+  <!-- Card da tabela -->
+  <div class="table-card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Usuário</th>
+          <th>Ação</th>
+          <th>Detalhes</th>
+          <th>Data/Hora</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let log of filteredLogs">
+          <td>
+            <strong>#{{ log.id }}</strong>
+          </td>
+          <td>
+            <div class="user-cell">
+              <span class="user-avatar">👤</span>
+              {{ log.usuario || 'Sistema' }}
+            </div>
+          </td>
+          <td>
+            <span 
+              class="action-badge"
+              [class.badge-create]="log.acao?.includes('CREATE') || log.acao?.includes('CRIAR')"
+              [class.badge-update]="log.acao?.includes('UPDATE') || log.acao?.includes('ATUALIZAR')"
+              [class.badge-delete]="log.acao?.includes('DELETE') || log.acao?.includes('EXCLUIR')"
+              [class.badge-login]="log.acao?.includes('LOGIN')"
+              [class.badge-default]="true">
+              {{ log.acao }}
+            </span>
+          </td>
+          <td>
+            <span class="details-text">{{ log.detalhes }}</span>
+          </td>
+          <td>
+            <span class="timestamp">
+              {{ log.dataHora | date:'dd/MM/yyyy' }}
+              <br>
+              <small>{{ log.dataHora | date:'HH:mm:ss' }}</small>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Loading state -->
+    <div *ngIf="loading" class="loading-container">
+      <div class="spinner"></div>
+      <p>Carregando registros de auditoria...</p>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!loading && filteredLogs.length === 0" class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h3>Nenhum registro encontrado</h3>
+      <p *ngIf="searchTerm">
+        Nenhum resultado para "{{ searchTerm }}". Tente alterar os termos da pesquisa.
+      </p>
+      <p *ngIf="!searchTerm">
+        Não há registros de auditoria disponíveis no momento.
+      </p>
+    </div>
+  </div>
+</div>

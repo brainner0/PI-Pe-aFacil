@@ -35,7 +35,6 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
-                        // ROTAS LIBERADAS
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register",
@@ -43,7 +42,10 @@ public class SecurityConfig {
                                 "/api/auth/verificar-username/**"
                         ).permitAll()
 
-                        // TODAS AS OUTRAS PRECISAM DE TOKEN
+                        // === ADMIN ONLY ===
+                        .requestMatchers("/api/audit/**", "/api/movimentacoes/**")
+                            .hasAuthority("ROLE_ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
