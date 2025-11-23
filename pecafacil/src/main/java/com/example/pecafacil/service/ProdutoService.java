@@ -1,67 +1,102 @@
 package com.example.pecafacil.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.example.pecafacil.audit.AuditService;
 import com.example.pecafacil.model.Produto;
+import com.example.pecafacil.mov.MovimentacaoProdutoService;
 import com.example.pecafacil.repository.ProdutoRepository;
+import com.example.pecafacil.security.JwtService;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProdutoService {
 
-    @Autowired
-    private ProdutoRepository produtoRepository;
+    private final ProdutoRepository repo;
+    private final AuditService auditService;
+    private final MovimentacaoProdutoService movService;
+    private final JwtService jwtService;
+
+    private String usuarioLogado() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     public List<Produto> listarTodos() {
-        return produtoRepository.findAll();
+        return repo.findByAtivoTrue();
     }
 
-    public Optional<Produto> buscarPorId(Long id) {
-        return produtoRepository.findById(id);
+    public Produto buscarPorId(Long id) {
+        return repo.findById(id).orElseThrow(() -> new RuntimeException("Produto não encontrado"));
     }
 
-    public Produto salvar(Produto produto) {
-        return produtoRepository.save(produto);
+    public Produto salvar(Produto p) {
+        Produto salvo = repo.save(p);
+        auditService.registrar(usuarioLogado(), "CRIAR", "Produto", salvo.getId(),
+                "Produto criado: " + salvo.getNome());
+        return salvo;
     }
 
-    public Produto atualizar(Long id, Produto produtoAtualizado) {
-        return produtoRepository.findById(id)
-                .map(produto -> {
-                    produto.setNome(produtoAtualizado.getNome());
-                    produto.setDescricao(produtoAtualizado.getDescricao());
-                    produto.setPreco(produtoAtualizado.getPreco());
-                    produto.setQuantidade(produtoAtualizado.getQuantidade());
-                    produto.setFornecedor(produtoAtualizado.getFornecedor()); // 👈 se tiver o campo fornecedor
-                    return produtoRepository.save(produto);
-                })
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+    public Produto atualizar(Long id, Produto dados) {
+        Produto p = buscarPorId(id);
+
+        p.setNome(dados.getNome());
+        p.setDescricao(dados.getDescricao());
+        p.setPreco(dados.getPreco());
+        p.setQuantidade(dados.getQuantidade());
+        p.setFornecedor(dados.getFornecedor());
+        p.setLocal(dados.getLocal());
+
+        Produto atualizado = repo.save(p);
+
+        auditService.registrar(usuarioLogado(), "ALTERAR", "Produto", atualizado.getId(),
+                "Produto atualizado");
+
+        return atualizado;
     }
 
     public void deletar(Long id) {
-        produtoRepository.deleteById(id);
+        Produto p = buscarPorId(id);
+        p.setAtivo(false);
+        repo.save(p);
+
+        auditService.registrar(usuarioLogado(), "EXCLUÍDO", "Produto", id,
+                "Produto excluído");
     }
 
-    // 🔹 Entrada de produtos
-    public Produto registrarEntrada(Long id, int quantidade) {
-    Produto produto = produtoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-    produto.setQuantidade(produto.getQuantidade() + quantidade);
-    produto.setDataUltimaEntrada(LocalDateTime.now());
-    return produtoRepository.save(produto);
-}
+    public Produto registrarEntrada(Long id, int qtd) {
+        Produto p = buscarPorId(id);
+        p.setQuantidade(p.getQuantidade() + qtd);
+        p.setDataUltimaEntrada(LocalDateTime.now());
 
-public Produto registrarSaida(Long id, int quantidade) {
-    Produto produto = produtoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-    if (produto.getQuantidade() < quantidade) {
-        throw new RuntimeException("Estoque insuficiente para saída!");
+        Produto salvo = repo.save(p);
+
+        movService.registrar(id, "ENTRADA", qtd, usuarioLogado());
+        auditService.registrar(usuarioLogado(), "ENTRADA", "Produto", id,
+                "Entrada de " + qtd);
+
+        return salvo;
     }
-    produto.setQuantidade(produto.getQuantidade() - quantidade);
-    produto.setDataUltimaSaida(LocalDateTime.now());
-    return produtoRepository.save(produto);
-}
-    
+
+    public Produto registrarSaida(Long id, int qtd) {
+        Produto p = buscarPorId(id);
+
+        if (p.getQuantidade() < qtd)
+            throw new RuntimeException("Estoque insuficiente!");
+
+        p.setQuantidade(p.getQuantidade() - qtd);
+        p.setDataUltimaSaida(LocalDateTime.now());
+
+        Produto salvo = repo.save(p);
+
+        movService.registrar(id, "SAIDA", qtd, usuarioLogado());
+        auditService.registrar(usuarioLogado(), "SAIDA", "Produto", id,
+                "Saída de " + qtd);
+
+        return salvo;
+    }
 }

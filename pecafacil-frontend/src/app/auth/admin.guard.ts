@@ -13,11 +13,19 @@ export class AdminGuard implements CanActivate {
   ) {}
 
   canActivate(): boolean {
-    if (!this.authService.isLoggedIn() || !this.authService.isAdmin()) {
-      // Se não for admin, manda para tela principal
-      this.router.navigate(['/']);
+    // não logado → login
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
       return false;
     }
+
+    // logado mas não é admin → produtos
+    if (!this.authService.isAdmin()) {
+      this.router.navigate(['/produtos']);
+      return false;
+    }
+
+    // admin → pode entrar
     return true;
   }
 }
