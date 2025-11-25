@@ -5,6 +5,7 @@ import com.example.pecafacil.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,14 +28,18 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService customUserDetailsService;
 
-    @Bean
+   @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(cs -> cs.disable())
-                .cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults()) // Correto, usa a configuração que você definiu no CorsConfig
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
+                        // ⚠️ LINHA CHAVE PARA CORREÇÃO DO CORS (LIBERA O PREFLIGHT)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
+                        
+                        // Rotas Públicas (Login, Cadastro)
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register",
@@ -44,7 +49,7 @@ public class SecurityConfig {
 
                         // === ADMIN ONLY ===
                         .requestMatchers("/api/audit/**", "/api/movimentacoes/**")
-                            .hasAuthority("ROLE_ADMIN")
+                                .hasAuthority("ROLE_ADMIN")
 
                         .anyRequest().authenticated()
                 )

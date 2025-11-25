@@ -8,7 +8,7 @@ export interface Produto {
   descricao: string;
   preco: number;
   quantidade: number;
-  fornecedor: string;
+  marca: string;
    local?: string;
   dataUltimaEntrada?: string;
   dataUltimaSaida?: string;

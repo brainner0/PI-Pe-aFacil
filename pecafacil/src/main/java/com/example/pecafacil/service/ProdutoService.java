@@ -48,7 +48,7 @@ public class ProdutoService {
         p.setDescricao(dados.getDescricao());
         p.setPreco(dados.getPreco());
         p.setQuantidade(dados.getQuantidade());
-        p.setFornecedor(dados.getFornecedor());
+        p.setMarca(dados.getMarca());
         p.setLocal(dados.getLocal());
 
         Produto atualizado = repo.save(p);
