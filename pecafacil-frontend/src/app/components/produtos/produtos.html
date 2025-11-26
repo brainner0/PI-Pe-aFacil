@@ -7,7 +7,7 @@
       type="text"
       [(ngModel)]="filtro"
       name="filtro"
-      placeholder="🔎 Buscar por nome, descrição, fornecedor ou ID..."
+      placeholder="🔎 Buscar por nome, descrição, marca ou ID..."
       class="search-input"
       autocomplete="off"
     />
@@ -50,9 +50,9 @@
            required>
 
     <input type="text"
-           placeholder=" Nome do fornecedor"
-           [(ngModel)]="novoProduto.fornecedor"
-           name="fornecedor"
+           placeholder=" Nome da marca"
+           [(ngModel)]="novoProduto.marca"
+           name="marca"
            required>
 
     <input type="text"
@@ -74,7 +74,7 @@
       <th>Descrição</th>
       <th>Preço</th>
       <th>Qtd.</th>
-      <th>Fornecedor</th>
+      <th>Marca</th>
     </tr>
     </thead>
 
@@ -93,14 +93,14 @@
           <td [ngClass]="{ 'baixo-estoque': p.quantidade < (p.estoqueMinimo || 0) }">
             {{ p.quantidade }}
           </td>
-          <td>{{ p.fornecedor }}</td>
+          <td>{{ p.marca }}</td>
         </tr>
 
         <tr *ngIf="p.expandido" class="detalhes-row">
           <td colspan="7">
             <div class="detalhes">
               <p><strong>Descrição:</strong> {{ p.descricao }}</p>
-              <p><strong>Fornecedor:</strong> {{ p.fornecedor }}</p>
+              <p><strong>marca:</strong> {{ p.marca }}</p>
               <p><strong>Última Entrada:</strong>
                 {{ p.dataUltimaEntrada ? (p.dataUltimaEntrada | date:'dd/MM/yyyy HH:mm') : '—' }}
               </p>

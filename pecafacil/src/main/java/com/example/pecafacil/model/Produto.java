@@ -19,7 +19,7 @@ public class Produto {
     @Column(nullable = false)
     private int estoqueMinimo = 0;
 
-    private String fornecedor;
+    private String marca;
     private String local; // Ex: "A32"
 
     @Column(name = "data_ultima_entrada")
@@ -34,12 +34,12 @@ public class Produto {
 
     public Produto() {}
 
-    public Produto(String nome, String descricao, double preco, int quantidade, String fornecedor) {
+    public Produto(String nome, String descricao, double preco, int quantidade, String marca) {
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
         this.quantidade = quantidade;
-        this.fornecedor = fornecedor;
+        this.marca = marca;
     }
 
     // ============================
@@ -94,12 +94,12 @@ public class Produto {
         this.estoqueMinimo = estoqueMinimo;
     }
 
-    public String getFornecedor() {
-        return fornecedor;
+    public String getMarca() {
+        return marca;
     }
 
-    public void setFornecedor(String fornecedor) {
-        this.fornecedor = fornecedor;
+    public void setMarca(String marca) {
+        this.marca = marca;
     }
 
     public String getLocal() {

@@ -17,7 +17,7 @@ export class ProdutosComponent implements OnInit {
   username: string | null = null;  // ← Agora o template acessa isso!
 
   produtos: Produto[] = [];
-  novoProduto: Produto = { nome: '', descricao: '', preco: undefined as any, quantidade: undefined as any, fornecedor: '' };
+  novoProduto: Produto = { nome: '', descricao: '', preco: undefined as any, quantidade: undefined as any, marca: '' };
 
   filtro: string = '';
 
@@ -57,14 +57,14 @@ export class ProdutosComponent implements OnInit {
       (p.id ?? '').toString().includes(termo) ||
       (p.nome ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().includes(termo) ||
       (p.descricao ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().includes(termo) ||
-      (p.fornecedor ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().includes(termo)
+      (p.marca ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().includes(termo)
     );
   }
 
   salvarProduto(): void {
     this.produtoService.salvarProduto(this.novoProduto).subscribe({
       next: () => {
-        this.novoProduto = { nome: '', descricao: '', preco: undefined as any, quantidade: undefined as any, fornecedor: '' };
+        this.novoProduto = { nome: '', descricao: '', preco: undefined as any, quantidade: undefined as any, marca: '' };
         this.carregarProdutos();
       },
       error: (err) => console.error('Erro ao salvar produto', err)
