@@ -14,4 +14,6 @@ export class MovimentacaoService {
   listar(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}`);
   }
+
+  
 }
