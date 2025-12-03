@@ -1,123 +1,357 @@
-<div class="container">
-  <h2>📦 Cadastro de Produtos</h2>
+<div class="produtos-page">
 
-  <!--  Barra de Pesquisa -->
-  <div class="search-bar">
-    <input
-      type="text"
-      [(ngModel)]="filtro"
-      name="filtro"
-      placeholder="🔎 Buscar por nome, descrição, marca ou ID..."
-      class="search-input"
-      autocomplete="off"
-    />
+  <!-- CABEÇALHO -->
+  <div class="page-header">
+    <div>
+      <h1>Gestão de Peças e Produtos</h1>
+      <p>Controle de estoque da oficina</p>
+    </div>
+
+    <button class="btn-primary" type="button" (click)="abrirModalNovo()">
+      + Novo Produto
+    </button>
   </div>
 
-  <!-- 📝 Formulário -->
-  <form (ngSubmit)="salvarProduto()" #produtoForm="ngForm" class="produto-form">
+  <!-- CARD DE FILTROS -->
+  <div class="filters-card">
+    <div class="filters-header">
+      <span class="filters-icon">⚲</span>
+      <span>Filtros de Busca</span>
+    </div>
 
-    <input type="text"
-           placeholder=" Nome do produto"
-           [(ngModel)]="novoProduto.nome"
-           name="nome"
-           required>
+    <div class="filters-grid">
+      <!-- BUSCA GERAL -->
+      <div class="filter-group filter-wide">
+        <label>Buscar por código, nome, descrição ou local</label>
+        <div class="input-with-icon">
+          <span>🔍</span>
+          <input
+            type="text"
+            [(ngModel)]="filtro"
+            name="filtro"
+            placeholder="Ex: PCA-001, óleo, filtro..."
+            autocomplete="off"
+          />
+        </div>
+      </div>
 
-    <input type="text"
-           placeholder=" Descrição do produto"
-           [(ngModel)]="novoProduto.descricao"
-           name="descricao"
-           required>
+      <!-- STATUS -->
+      <div class="filter-group">
+        <label>Status</label>
+        <select [(ngModel)]="statusFiltro" name="statusFiltro">
+          <option value="todos">Todos</option>
+          <option value="disponiveis">Disponíveis</option>
+          <option value="baixo">Baixo estoque</option>
+          <option value="esgotados">Esgotados</option>
+        </select>
+      </div>
 
-    <input type="number"
-           placeholder=" Digite o preço (R$)"
-           [(ngModel)]="novoProduto.preco"
-           name="preco"
-           step="0.01"
-           min="0"
-           required>
+      <!-- LOCAL -->
+      <div class="filter-group">
+        <label>Local</label>
+        <select [(ngModel)]="localFiltro" name="localFiltro">
+          <option value="todos">Todos</option>
+          <option *ngFor="let loc of locaisDisponiveis" [value]="loc">
+            {{ loc }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-    <input type="number"
-           placeholder="Estoque mínimo"
-           [(ngModel)]="novoProduto.estoqueMinimo"
-           name="estoqueMinimo"
-           required>
+  <!-- CARDS DE RESUMO -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-label">Total de Itens</span>
+      <span class="stat-value">{{ totalItens }}</span>
+    </div>
 
-    <input type="number"
-           placeholder=" Informe a quantidade em estoque"
-           [(ngModel)]="novoProduto.quantidade"
-           name="quantidade"
-           min="0"
-           required>
+    <div class="stat-card">
+      <span class="stat-label">Disponíveis</span>
+      <span class="stat-value positive">{{ disponiveis }}</span>
+    </div>
 
-    <input type="text"
-           placeholder=" Nome da marca"
-           [(ngModel)]="novoProduto.marca"
-           name="marca"
-           required>
+    <div class="stat-card">
+      <span class="stat-label">Baixo Estoque</span>
+      <span class="stat-value warning">{{ baixoEstoqueCount }}</span>
+    </div>
 
-    <input type="text"
-           placeholder="Local de armazenamento (ex: A32)"
-           [(ngModel)]="novoProduto.local"
-           name="local"
-           required>
+    <div class="stat-card">
+      <span class="stat-label">Esgotados</span>
+      <span class="stat-value danger">{{ esgotados }}</span>
+    </div>
+  </div>
 
-    <button type="submit" class="btn-salvar"> Salvar</button>
-  </form>
-
-  <!-- 📋 Tabela -->
-  <table class="produtos-table">
-    <thead>
-    <tr>
-      <th></th>
-      <th>Local</th>
-      <th>Nome</th>
-      <th>Descrição</th>
-      <th>Preço</th>
-      <th>Qtd.</th>
-      <th>Marca</th>
-    </tr>
-    </thead>
-
-    <tbody>
-      <ng-container *ngFor="let p of produtosFiltrados">
+  <!-- LISTA / TABELA DE PRODUTOS -->
+  <div class="list-card">
+    <table class="produtos-table">
+      <thead>
         <tr>
-          <td class="seta-cell">
-            <button class="seta" (click)="p.expandido = !p.expandido">
-              <span [innerHTML]="p.expandido ? '&#9660;' : '&#9654;'"></span>
-            </button>
-          </td>
-          <td>{{ p.local || '—' }}</td>
-          <td>{{ p.nome }}</td>
-          <td>{{ p.descricao }}</td>
-          <td>{{ p.preco | currency:'BRL' }}</td>
-          <td [ngClass]="{ 'baixo-estoque': p.quantidade < (p.estoqueMinimo || 0) }">
-            {{ p.quantidade }}
-          </td>
-          <td>{{ p.marca }}</td>
+          <th></th>
+          <th>Local</th>
+          <th>Produto</th>
+          <th>Descrição</th>
+          <th>Preço Un.</th>
+          <th>Qtd.</th>
+          <th>Marca</th>
+          <th>Ações</th>
         </tr>
+      </thead>
 
-        <tr *ngIf="p.expandido" class="detalhes-row">
-          <td colspan="7">
-            <div class="detalhes">
-              <p><strong>Descrição:</strong> {{ p.descricao }}</p>
-              <p><strong>marca:</strong> {{ p.marca }}</p>
-              <p><strong>Última Entrada:</strong>
-                {{ p.dataUltimaEntrada ? (p.dataUltimaEntrada | date:'dd/MM/yyyy HH:mm') : '—' }}
-              </p>
-              <p><strong>Última Saída:</strong>
-                {{ p.dataUltimaSaida ? (p.dataUltimaSaida | date:'dd/MM/yyyy HH:mm') : '—' }}
-              </p>
+      <tbody>
+        <ng-container *ngFor="let p of produtosFiltrados">
+          <tr>
+            <td class="seta-cell">
+              <button
+                class="seta"
+                type="button"
+                (click)="p.expandido = !p.expandido"
+                [attr.aria-expanded]="p.expandido"
+              >
+                <span [innerHTML]="p.expandido ? '&#9660;' : '&#9654;'"></span>
+              </button>
+            </td>
+            <td>{{ p.local || '—' }}</td>
+            <td>{{ p.nome }}</td>
+            <td class="col-descricao">{{ p.descricao }}</td>
+            <td>{{ p.preco | currency:'BRL':'symbol-narrow' }}</td>
 
-              <div class="acoes">
-                <button class="btn entrada" (click)="entrada(p.id!)">Entrada</button>
-                <button class="btn saida" (click)="saida(p.id!)">Saída</button>
-                <button class="btn excluir" (click)="excluir(p.id!)">Excluir</button>
+            <td class="col-qtd">
+              <span
+                [ngClass]="{
+                  'badge-qtd-esgotado': isEsgotado(p),
+                  'badge-qtd-baixo': !isEsgotado(p) && isBaixoEstoque(p)
+                }"
+              >
+                {{ p.quantidade ?? 0 }}
+              </span>
+            </td>
+
+            <td>{{ p.marca }}</td>
+            <td class="col-acoes">
+              <button
+                class="btn-ghost"
+                type="button"
+                (click)="abrirMov(p, 'entrada')"
+              >
+                Entrada
+              </button>
+              <button
+                class="btn-ghost warning"
+                type="button"
+                (click)="abrirMov(p, 'saida')"
+              >
+                Saída
+              </button>
+              <button
+                class="btn-ghost danger"
+                type="button"
+                (click)="excluir(p.id!)"
+                *ngIf="isAdmin"
+              >
+                Excluir
+              </button>
+            </td>
+          </tr>
+
+          <!-- LINHA EXPANDIDA -->
+          <tr *ngIf="p.expandido" class="detalhes-row">
+            <td colspan="8">
+              <div class="detalhes">
+                <p><strong>Descrição:</strong> {{ p.descricao }}</p>
+                <p><strong>Marca / Fornecedor:</strong> {{ p.marca }}</p>
+                <p><strong>Estoque mínimo:</strong> {{ p.estoqueMinimo || '—' }}</p>
+                <p>
+                  <strong>Última Entrada:</strong>
+                  {{
+                    p.dataUltimaEntrada
+                      ? (p.dataUltimaEntrada | date:'dd/MM/yyyy HH:mm')
+                      : '—'
+                  }}
+                </p>
+                <p>
+                  <strong>Última Saída:</strong>
+                  {{
+                    p.dataUltimaSaida
+                      ? (p.dataUltimaSaida | date:'dd/MM/yyyy HH:mm')
+                      : '—'
+                  }}
+                </p>
               </div>
-            </div>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
 
-      </ng-container>
-    </tbody>
-  </table>
+    <div class="sem-produtos" *ngIf="produtosFiltrados.length === 0">
+      Nenhum produto encontrado com os filtros atuais.
+    </div>
+  </div>
+
+  <!-- MODAL NOVO PRODUTO -->
+  <div
+    class="modal-backdrop"
+    *ngIf="mostrarModalNovo"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Novo Produto</h2>
+        <button
+          type="button"
+          class="close-btn"
+          (click)="fecharModalNovo()"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
+      </div>
+
+      <form (ngSubmit)="salvarProduto()" #produtoForm="ngForm">
+        <div class="modal-body">
+          <div class="form-grid">
+            <input
+              type="text"
+              placeholder="Nome do produto"
+              [(ngModel)]="novoProduto.nome"
+              name="novoNome"
+              required
+            />
+
+            <input
+              type="text"
+              placeholder="Descrição do produto"
+              [(ngModel)]="novoProduto.descricao"
+              name="novoDescricao"
+              required
+            />
+
+            <input
+              type="number"
+              placeholder="Preço (R$)"
+              [(ngModel)]="novoProduto.preco"
+              name="novoPreco"
+              step="0.01"
+              min="0"
+              required
+            />
+
+            <input
+              type="number"
+              placeholder="Estoque mínimo"
+              [(ngModel)]="novoProduto.estoqueMinimo"
+              name="novoEstoqueMinimo"
+              min="0"
+              required
+            />
+
+            <input
+              type="number"
+              placeholder="Quantidade em estoque"
+              [(ngModel)]="novoProduto.quantidade"
+              name="novoQuantidade"
+              min="0"
+              required
+            />
+
+            <input
+              type="text"
+              placeholder="Marca / Fornecedor"
+              [(ngModel)]="novoProduto.marca"
+              name="novoMarca"
+              required
+            />
+
+            <input
+              type="text"
+              placeholder="Local (ex: Prateleira A-12)"
+              [(ngModel)]="novoProduto.local"
+              name="novoLocal"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn-ghost"
+            (click)="fecharModalNovo()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="produtoForm.invalid"
+          >
+            Salvar produto
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL DE ENTRADA / SAÍDA -->
+  <div
+    class="modal-backdrop"
+    *ngIf="mostrarModalMov"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="modal small">
+      <div class="modal-header">
+        <h2>
+          {{ tipoMov === 'entrada' ? 'Registrar entrada' : 'Registrar saída' }}
+        </h2>
+        <button
+          type="button"
+          class="close-btn"
+          (click)="fecharMov()"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-produto-nome">{{ produtoSelecionado?.nome }}</p>
+        <p class="modal-produto-info">
+          Estoque atual:
+          <strong>{{ produtoSelecionado?.quantidade ?? 0 }}</strong>
+        </p>
+
+        <label for="qtdMov">Quantidade</label>
+        <input
+          id="qtdMov"
+          type="number"
+          min="1"
+          [(ngModel)]="quantidadeMov"
+          name="quantidadeMov"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn-ghost"
+          (click)="fecharMov()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="confirmarMov()"
+          [disabled]="!quantidadeMov || quantidadeMov <= 0"
+        >
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>
