@@ -7,18 +7,39 @@
 
   <!-- COLUNA 2 — CENTRO (MENU DESKTOP) -->
   <ul class="nav-menu" *ngIf="isLoggedIn">
-    <li><button class="nav-btn" (click)="goTo('produtos')">Produtos</button></li>
-    <li><button class="nav-btn" (click)="goTo('clientes')">Clientes</button></li>
-    <li><button class="nav-btn" (click)="goTo('pecas')">Peças</button></li>
-    <li><button class="nav-btn" (click)="goTo('ordens')">Ordens</button></li>
-    <li *ngIf="isAdmin"><button class="nav-btn" (click)="goTo('admin/movimentacoes')">Movimentações</button></li>
-    <li *ngIf="isAdmin"><button class="nav-btn" (click)="goTo('admin/auditlog')">Audit Log</button></li>
+
+    <!-- Produtos -->
+    <li>
+      <button class="nav-btn" (click)="goTo('produtos')">Produtos</button>
+    </li>
+
+    <!-- Movimentações – apenas admin -->
+    <li *ngIf="isAdmin">
+      <button class="nav-btn" (click)="goTo('admin/movimentacoes')">
+        Movimentações
+      </button>
+    </li>
+
+    <!-- Auditoria – apenas admin -->
+    <li *ngIf="isAdmin">
+      <button class="nav-btn" (click)="goTo('admin/auditlog')">
+        Auditoria
+      </button>
+    </li>
+
+    <!-- Configurações (era 'clientes') -->
+    <li>
+      <button class="nav-btn" (click)="goTo('clientes')">
+        Configurações
+      </button>
+    </li>
+
   </ul>
 
   <!-- COLUNA 3 — DIREITA (LOGO + HAMBÚRGUER) -->
   <div class="nav-right">
     <img src="assets/logo-pecafacil.png" class="logo" />
-    <span class="system-name">PecaFácil __.</span>
+    <span class="system-name">PecaFácil</span>
 
     <!-- BOTÃO HAMBÚRGUER (SÓ MOBILE) -->
     <button
@@ -36,11 +57,34 @@
 <!-- MENU MOBILE (DROP-DOWN) -->
 <div class="mobile-menu" *ngIf="isLoggedIn && isMenuOpen">
   <ul>
-    <li><button class="mobile-nav-btn" (click)="goTo('produtos')">Produtos</button></li>
-    <li><button class="mobile-nav-btn" (click)="goTo('clientes')">Clientes</button></li>
-    <li><button class="mobile-nav-btn" (click)="goTo('pecas')">Peças</button></li>
-    <li><button class="mobile-nav-btn" (click)="goTo('ordens')">Ordens</button></li>
-    <li *ngIf="isAdmin"><button class="mobile-nav-btn" (click)="goTo('admin/movimentacoes')">Movimentações</button></li>
-    <li *ngIf="isAdmin"><button class="mobile-nav-btn" (click)="goTo('admin/auditlog')">Audit Log</button></li>
+
+    <!-- Produtos -->
+    <li>
+      <button class="mobile-nav-btn" (click)="goTo('produtos')">
+        Produtos
+      </button>
+    </li>
+
+    <!-- Movimentações – apenas admin -->
+    <li *ngIf="isAdmin">
+      <button class="mobile-nav-btn" (click)="goTo('admin/movimentacoes')">
+        Movimentações
+      </button>
+    </li>
+
+    <!-- Auditoria -->
+    <li *ngIf="isAdmin">
+      <button class="mobile-nav-btn" (click)="goTo('admin/auditlog')">
+        Auditoria
+      </button>
+    </li>
+
+    <!-- Configurações -->
+    <li>
+      <button class="mobile-nav-btn" (click)="goTo('clientes')">
+        Configurações
+      </button>
+    </li>
+
   </ul>
 </div>

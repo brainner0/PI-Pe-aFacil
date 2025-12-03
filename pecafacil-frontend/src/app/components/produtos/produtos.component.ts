@@ -61,7 +61,11 @@ export class ProdutosComponent implements OnInit {
 
   carregarProdutos(): void {
     this.produtoService.listarProdutos().subscribe({
-      next: (data) => (this.produtos = data),
+      next: (data) => {
+        this.produtos = data.sort((a, b) =>
+          a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' })
+        );
+      },
       error: (err) => console.error('Erro ao listar produtos', err)
     });
   }
