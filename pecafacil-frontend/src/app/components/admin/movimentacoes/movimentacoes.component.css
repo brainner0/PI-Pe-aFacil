@@ -1,50 +1,154 @@
+:host {
+  --primary-color: #6366f1;
+  --primary-dark: #4f46e5;
+  --secondary-color: #f8fafc;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+             0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --radius: 12px;
+  --navbar-height: 60px;
+}
+
+/* CONTAINER */
 .container {
-  max-width: 900px;
-  margin: 40px auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  padding-top: calc(var(--navbar-height) + 24px);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
+/* HEADER */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
 }
 
-/* Seu código existente: */
+.header-content h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-content p {
+  margin-top: 6px;
+  color: var(--text-secondary);
+}
+
+/* SEARCH BAR */
+.search-container {
+  position: relative;
+  width: 280px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: 14px;
+  background: white;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+}
+
+/* CARD DA TABELA */
+.table-card {
+  background: white;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* TABELA */
 .table {
   width: 100%;
   border-collapse: collapse;
 }
 
 .table th {
-  background: #28a745;
-  color: white;
-  padding: 10px;
-  /* NOVO: Centraliza o texto do cabeçalho */
-  text-align: center;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--secondary-color), #f1f5f9);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .table td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  /* NOVO: Define um alinhamento base para o texto do corpo */
-  text-align: center; 
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
 }
 
-/* ⬅️ Ajuste fino para colunas de texto longo (Produto, Usuário) */
-/* Mantém o alinhamento à esquerda para melhor leitura de nomes */
-.table td:nth-child(2), /* Coluna Produto */
-.table td:nth-child(6)  /* Coluna Usuário */ {
-   
+/* Badges */
+.action-badge {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 20px;
+  font-weight: 600;
 }
 
-/* ➡️ Ajuste para colunas Numéricas/Curtas */
-/* Colunas: ID (1), Tipo (3), Qtd (4), Data (5) */
-.table td:nth-child(1),
-.table td:nth-child(3),
-.table td:nth-child(4),
-.table td:nth-child(5) {
-    text-align: center;
+.badge-enter {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-exit {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* EFFECTS */
+.table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* LOADING */
+.loading-container {
+  padding: 40px;
+  text-align: center;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 4px solid #ddd;
+  border-left-color: var(--primary-color);
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 50px;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 48px;
+  opacity: .4;
 }

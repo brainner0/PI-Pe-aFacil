@@ -1,30 +1,76 @@
 <div class="container">
 
-  <h2>📦 Histórico de Movimentações</h2>
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>
+        <span class="header-icon">🔄</span>
+        Histórico de Movimentações
+      </h1>
+      <p>Registro de entradas e saídas realizadas no estoque</p>
+    </div>
 
-  <table *ngIf="!loading" class="table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Produto</th>
-        <th>Tipo</th>
-        <th>Qtd</th>
-        <th>Data</th>
-        <th>Usuário</th>
-      </tr>
-    </thead>
+    <!-- Busca -->
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Buscar por produto, tipo ou usuário..."
+        [(ngModel)]="searchTerm">
+    </div>
+  </div>
 
-    <tbody>
-      <tr *ngFor="let m of lista">
-        <td>{{ m.id }}</td>
-        <td>{{ m.produtoNome }}</td>
-        <td>{{ m.tipo }}</td>
-        <td>{{ m.quantidade }}</td>
-        <td>{{ m.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td>{{ m.usuario }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- CARD DA TABELA -->
+  <div class="table-card">
 
-  <div *ngIf="loading" class="loading">Carregando...</div>
+    <!-- LOADING -->
+    <div *ngIf="loading" class="loading-container">
+      <div class="spinner"></div>
+      <p>Carregando movimentações...</p>
+    </div>
+
+    <!-- TABELA -->
+    <table class="table" *ngIf="!loading && filteredLista.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Produto</th>
+          <th>Tipo</th>
+          <th>Quantidade</th>
+          <th>Data/Hora</th>
+          <th>Usuário</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let mov of filteredLista">
+          <td><strong>#{{ mov.id }}</strong></td>
+          <td>{{ mov.produtoNome }}</td>
+          <td>
+            <span 
+              class="action-badge"
+              [class.badge-enter]="mov.tipo === 'ENTRADA'"
+              [class.badge-exit]="mov.tipo === 'SAIDA'">
+              {{ mov.tipo }}
+            </span>
+          </td>
+          <td>{{ mov.quantidade }}</td>
+          <td>
+            {{ mov.dataHora | date:'dd/MM/yyyy' }}<br>
+            <small>{{ mov.dataHora | date:'HH:mm' }}</small>
+          </td>
+          <td>{{ mov.usuario }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- EMPTY STATE -->
+    <div *ngIf="!loading && filteredLista.length === 0" class="empty-state">
+      <div class="empty-icon">📄</div>
+      <h3>Nenhuma movimentação encontrada</h3>
+      <p *ngIf="searchTerm">Refine os filtros ou limpe a busca.</p>
+    </div>
+
+  </div>
 </div>
