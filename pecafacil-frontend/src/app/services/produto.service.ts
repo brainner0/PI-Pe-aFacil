@@ -40,6 +40,10 @@ export class ProdutoService {
   registrarSaida(id: number, quantidade: number): Observable<Produto> {
     return this.http.patch<Produto>(`${this.apiUrl}/${id}/saida/${quantidade}`, {});
   }
+  
+  atualizarProduto(id: number, produto: Produto): Observable<Produto> {
+    return this.http.put<Produto>(`${this.apiUrl}/${id}`, produto);
+  }
 
   deletarProduto(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
