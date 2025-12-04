@@ -36,6 +36,8 @@ export class ProdutosComponent implements OnInit {
   // modal "Novo Produto"
   mostrarModalNovo = false;
 
+  editandoId: number | null = null;
+
   // modal de movimentação (entrada / saída)
   mostrarModalMov = false;
   tipoMov: 'entrada' | 'saida' | null = null;
@@ -150,30 +152,53 @@ export class ProdutosComponent implements OnInit {
 
   abrirModalNovo(): void {
     this.mostrarModalNovo = true;
+    
   }
 
   fecharModalNovo(): void {
     this.mostrarModalNovo = false;
+    this.editandoId = null; 
+
+  this.novoProduto = {
+    nome: '',
+    descricao: '',
+    preco: undefined as any,
+    quantidade: undefined as any,
+    marca: '',
+    estoqueMinimo: undefined as any,
+    local: ''
+  };
   }
 
   salvarProduto(): void {
+  // Se tiver um ID de edição, chama o ATUALIZAR
+  if (this.editandoId) {
+    this.produtoService.atualizarProduto(this.editandoId, this.novoProduto).subscribe({
+      next: () => {
+        this.fecharModalNovo();
+        this.carregarProdutos();
+      },
+      error: (err) => console.error('Erro ao atualizar produto', err)
+    });
+  } 
+  // Se não, chama o SALVAR (CRIAR NOVO)
+  else {
     this.produtoService.salvarProduto(this.novoProduto).subscribe({
       next: () => {
-        this.novoProduto = {
-          nome: '',
-          descricao: '',
-          preco: undefined as any,
-          quantidade: undefined as any,
-          marca: '',
-          estoqueMinimo: undefined as any,
-          local: ''
-        };
-        this.mostrarModalNovo = false;
+        this.fecharModalNovo();
         this.carregarProdutos();
       },
       error: (err) => console.error('Erro ao salvar produto', err)
     });
   }
+}
+  // ======== MODAL DE EDIÇAO ========
+
+  abrirModalEditar(produto: Produto): void {
+  this.editandoId = produto.id!; 
+  this.novoProduto = { ...produto }; 
+  this.mostrarModalNovo = true;
+}
 
   // ======== MODAL DE MOVIMENTAÇÃO ========
 
