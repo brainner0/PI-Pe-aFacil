@@ -1,0 +1,269 @@
+/* ================= LAYOUT DA PÁGINA ================= */
+.container {
+  padding: 20px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  padding-top: 100px; /* Empurra o título para baixo da navbar */
+  min-height: 100vh;  /* Garante que o fundo vá até o final */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Corrige a fonte */
+}
+
+/* Cabeçalho (Título e Ícone) */
+.page-header {
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content h1 {
+  font-size: 24px;
+  color: #1a2a44;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-icon {
+  font-size: 24px;
+}
+
+.header-content p {
+  color: #6c757d;
+  margin: 5px 0 0 38px; /* Alinha com o texto do h1 */
+  font-size: 14px;
+}
+
+/* ================= CARD BRANCO (Fundo da Tabela) ================= */
+.table-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  overflow: hidden; /* Para as bordas arredondadas */
+}
+
+.card-header h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #1a2a44;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+/* ================= TABELA ================= */
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table th {
+  text-align: left;
+  padding: 15px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  border-bottom: 2px solid #f1f3f5;
+}
+
+.table td {
+  padding: 15px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f3f5;
+  color: #333;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Coluna de Ações */
+.col-acoes {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ================= BADGES (Perfil) ================= */
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.badge-admin {
+  background-color: #e0dbff; /* Roxo clarinho */
+  color: #5a32a3;
+  border: 1px solid #dcd6fa;
+}
+
+.badge-user {
+  background-color: #dbeafe; /* Azul clarinho */
+  color: #1e40af;
+  border: 1px solid #d1e3fa;
+}
+
+/* ================= BOTÕES (Aprovar / Recusar) ================= */
+.btn-approve {
+  background-color: #28a745; /* Verde Sucesso */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background 0.2s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-approve:hover {
+  background-color: #218838;
+  transform: translateY(-1px);
+}
+
+.btn-reject {
+  background-color: #dc3545; /* Vermelho Perigo */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background 0.2s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-reject:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+/* ================= EMPTY STATE (Quando não tem ninguém) ================= */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+}
+
+.empty-icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.empty-state h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #1a2a44;
+}
+/* ================= ESTILOS DO MODAL ================= */
+.modal-backdrop {
+  position: fixed;
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Fundo escuro */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px); /* Desfoque no fundo */
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: subir 0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes subir {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-size: 18px;
+  margin: 0;
+  color: #333;
+}
+
+.close-btn {
+  background: none; 
+  border: none; 
+  font-size: 24px; 
+  cursor: pointer; 
+  color: #999;
+}
+
+.modal-body {
+  padding: 20px;
+  font-size: 15px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  background: #f9f9f9;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Botão Cancelar (Cinza/Transparente) */
+.ghost-btn {
+  background: transparent;
+  border: 1px solid #ccc;
+  color: #666;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.ghost-btn:hover { 
+  background: #eee; 
+}
+ 
+.btn-delete-custom {
+  background-color: #fee2e2; 
+  color: #991b1b;          
+  border: 1px solid #fecaca; 
+  padding: 6px 16px;       
+  border-radius: 20px;     
+  font-weight: 600;       
+  font-size: 13px;         
+  cursor: pointer;         
+  transition: all 0.2s ease; 
+}
+
+
+.btn-delete-custom:hover {
+  background-color: #fecaca; 
+  border-color: #fda4af;
+}

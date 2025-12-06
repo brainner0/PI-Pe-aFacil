@@ -1,1 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
+/* ================= VARIÁVEIS GLOBAIS (Cores e Fontes) ================= */
+:root {
+  --primary-color: #6366f1;
+  --primary-dark: #4f46e5;
+  --secondary-color: #f8fafc;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+            0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --radius: 12px;
+  --navbar-height: 60px;
+}
+
+/* ================= FONTE PADRÃO (Resolve o problema do Login e Configurações) ================= */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+  background-color: #f8f9fa;
+  color: var(--text-primary);
+}
+
+/* Garante a fonte bonita em botões e inputs também */
+button, input, textarea, select, table {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}

@@ -1,0 +1,107 @@
+<div class="container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1><span class="header-icon">⚙️</span> Configurações e Usuários</h1>
+      <p>Gerencie aprovações e usuários do sistema</p>
+    </div>
+  </div>
+
+  <div class="table-card" *ngIf="pendentes.length > 0" style="margin-bottom: 30px;">
+    <div class="card-header" style="background-color: #fff8e1;">
+      <h3 style="color: #b7791f;">⏳ Pendentes de Aprovação</h3>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>Email</th>
+          <th>Perfil</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of pendentes">
+          <td><strong>{{ user.fullName }}</strong><br><small>{{ user.username }}</small></td>
+          <td>{{ user.cpf }}</td>
+          <td>{{ user.email }}</td>
+          <td><span class="badge badge-user">{{ user.role }}</span></td>
+          <td class="col-acoes">
+            <button class="btn-approve" (click)="iniciarAprovacao(user)">✅ Aprovar</button>
+            <button class="btn-reject" (click)="iniciarRecusa(user)">❌ Recusar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-card">
+    <div class="card-header">
+      <h3>👥 Usuários do Sistema</h3>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>Email</th>
+          <th>Perfil</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of ativos">
+          <td>
+            <strong>{{ user.fullName }}</strong><br>
+            <small class="text-muted">{{ user.username }}</small>
+          </td>
+          <td>{{ user.cpf }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="badge" [ngClass]="user.role === 'ROLE_ADMIN' ? 'badge-admin' : 'badge-user'">
+              {{ user.role === 'ROLE_ADMIN' ? 'Administrador' : 'Funcionário' }}
+            </span>
+          </td>
+          <td class="col-acoes">
+            <button class="btn-delete-custom" (click)="iniciarExclusao(user)">
+  Excluir
+</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="empty-state" *ngIf="ativos.length === 0">
+      <p>Nenhum usuário ativo encontrado.</p>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="usuarioSelecionado">
+    <div class="modal modal-small">
+      <div class="modal-header">
+        <h2>Confirmar Ação</h2>
+        <button class="close-btn" (click)="fecharModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Você deseja realmente 
+          <strong [style.color]="tipoAcao === 'aprovar' ? 'var(--success-color)' : 'var(--error-color)'">
+            {{ tipoAcao === 'aprovar' ? 'APROVAR' : 'EXCLUIR' }}
+          </strong> 
+          o usuário <strong>{{ usuarioSelecionado.fullName }}</strong>?
+        </p>
+        <p class="text-muted" *ngIf="tipoAcao !== 'aprovar'" style="font-size: 13px;">
+          ⚠️ Essa ação removerá o usuário do sistema permanentemente.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="ghost-btn" (click)="fecharModal()">Cancelar</button>
+        <button 
+          [class]="tipoAcao === 'aprovar' ? 'btn-approve' : 'btn-reject'" 
+          (click)="confirmarAcao()">
+          {{ tipoAcao === 'aprovar' ? 'Sim, Aprovar' : 'Sim, Excluir' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

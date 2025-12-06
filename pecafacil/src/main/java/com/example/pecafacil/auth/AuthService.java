@@ -52,6 +52,7 @@ public class AuthService {
                 .phone(request.getPhone())
                 .email(request.getEmail())
                 .address(address)
+                .active(false)// Todo mundo nasce inativo, até quem pede para ser Admin
                 .build();
 
         userRepository.save(user);
@@ -81,6 +82,9 @@ public class AuthService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
+        if (!user.isActive()) {
+    throw new RuntimeException("Cadastro pendente de aprovação pelo administrador.");
+} 
         return new AuthResponse(
                 jwtService.generateToken(
                         (UserDetails) auth.getPrincipal(),

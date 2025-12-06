@@ -39,19 +39,30 @@ export class LoginComponent {
     this.authService.login(this.username, this.password).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/produtos']);  // redireciona ao sucesso do login
+        this.router.navigate(['/produtos']);
       },
       error: (err) => {
         this.loading = false;
+        console.log('Erro completo:', err);
 
-        // Se backend retornar mensagem, mostra ela
-        if (err?.error?.message) {
-          this.errorMessage = err.error.message;
-        } else {
-          this.errorMessage = 'Usuário ou senha inválidos.';
+        // Pega a mensagem de texto do erro (se houver)
+        const msg = err.error?.message || err.error || '';
+        const textoErro = msg.toString().toLowerCase();
+
+        // --- LÓGICA NOVA ---
+
+        // 1. Se a mensagem diz explicitamente que está pendente/aprovação
+        if (textoErro.includes('pendente') || textoErro.includes('aprovação')) {
+           this.errorMessage = '⏳ Seu cadastro está em análise. Aguarde a aprovação do administrador.';
+        } 
+        // 2. Se NÃO for pendente, mas deu erro 403 ou 401, então é Senha/Usuário errado
+        else if (err.status === 401 || err.status === 403) {
+           this.errorMessage = 'Usuário ou senha inválidos.';
+        } 
+        // 3. Qualquer outro erro (Servidor desligado, erro 500, etc)
+        else {
+           this.errorMessage = 'Erro ao entrar. Verifique seus dados.';
         }
-
-        console.error('Erro no login', err);
       }
     });
   }

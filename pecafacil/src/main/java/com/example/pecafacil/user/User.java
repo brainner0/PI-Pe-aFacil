@@ -16,6 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    
     // =============================
     // Dados de acesso
     // =============================
@@ -42,6 +43,9 @@ public class User {
 
     @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
+    private boolean active = false; // Padrão é falso (bloqueado)
 
     // =============================
     // Endereço (One To One)

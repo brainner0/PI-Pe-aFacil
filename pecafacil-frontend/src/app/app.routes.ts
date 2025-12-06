@@ -6,6 +6,9 @@ import { AuthGuard } from './auth/auth.guard';
 import { AdminGuard } from './auth/admin.guard';
 import { ProdutosComponent } from './components/produtos/produtos.component';
 
+// 1. ADICIONE O IMPORT AQUI (Verifique se o caminho da pasta está certo)
+import { ConfiguracoesComponent } from './pages/configuracoes/configuracoes.component';
+
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -15,6 +18,14 @@ export const routes: Routes = [
 
   // Acesso geral (usuários logados)
   { path: 'produtos', component: ProdutosComponent, canActivate: [AuthGuard] },
+
+  // 2. ADICIONE A ROTA NOVA AQUI
+  // (Sugiro adicionar o AdminGuard também, já que é pra aprovar usuários)
+  {
+    path: 'clientes',
+    component: ConfiguracoesComponent,
+    canActivate: [AuthGuard, AdminGuard]
+  },
 
   // === ROTAS ADMIN (batendo com a navbar) ===
   {
