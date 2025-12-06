@@ -1,7 +1,16 @@
-main {
-  margin-top: 70px;
-  display: block;
-  position: relative;
-  z-index: 1;
+:root {
+  --navbar-height: 64px; /* altura real da navbar */
 }
 
+html, body {
+  margin: 0;       /* remove margem padrão */
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+main.app-content {
+  margin-top: var(--navbar-height);
+  display: block;
+  position: relative;
+}
