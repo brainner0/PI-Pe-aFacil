@@ -5,7 +5,6 @@ WORKDIR /app
 # Copia o pom e as pastas necessárias
 COPY pom.xml .
 COPY src ./src
-COPY config ./config
 
 # Faz o build (gera o .jar na pasta target)
 RUN mvn clean package -DskipTests
