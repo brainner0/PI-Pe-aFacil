@@ -1,10 +1,17 @@
 package com.example.pecafacil.model;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "produtos")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Produto {
 
     @Id
@@ -17,10 +24,10 @@ public class Produto {
     private int quantidade;
 
     @Column(nullable = false)
-    private int estoqueMinimo = 0;
+    private int estoqueMinimo;
 
     private String marca;
-    private String local; // Ex: "A32"
+    private String local;
 
     @Column(name = "data_ultima_entrada")
     private LocalDateTime dataUltimaEntrada;
@@ -28,109 +35,6 @@ public class Produto {
     @Column(name = "data_ultima_saida")
     private LocalDateTime dataUltimaSaida;
 
-    // NOVO → Soft delete
     @Column(nullable = false)
-    private boolean ativo = true;
-
-    public Produto() {}
-
-    public Produto(String nome, String descricao, double preco, int quantidade, String marca) {
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
-        this.quantidade = quantidade;
-        this.marca = marca;
-    }
-
-    // ============================
-    // GETTERS & SETTERS
-    // ============================
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public double getPreco() {
-        return preco;
-    }
-
-    public void setPreco(double preco) {
-        this.preco = preco;
-    }
-
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public int getEstoqueMinimo() {
-        return estoqueMinimo;
-    }
-
-    public void setEstoqueMinimo(int estoqueMinimo) {
-        this.estoqueMinimo = estoqueMinimo;
-    }
-
-    public String getMarca() {
-        return marca;
-    }
-
-    public void setMarca(String marca) {
-        this.marca = marca;
-    }
-
-    public String getLocal() {
-        return local;
-    }
-
-    public void setLocal(String local) {
-        this.local = local;
-    }
-
-    public LocalDateTime getDataUltimaEntrada() {
-        return dataUltimaEntrada;
-    }
-
-    public void setDataUltimaEntrada(LocalDateTime dataUltimaEntrada) {
-        this.dataUltimaEntrada = dataUltimaEntrada;
-    }
-
-    public LocalDateTime getDataUltimaSaida() {
-        return dataUltimaSaida;
-    }
-
-    public void setDataUltimaSaida(LocalDateTime dataUltimaSaida) {
-        this.dataUltimaSaida = dataUltimaSaida;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
-    }
+    private boolean ativo;
 }
