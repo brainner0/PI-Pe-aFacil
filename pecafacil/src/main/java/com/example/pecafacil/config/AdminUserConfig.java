@@ -38,13 +38,14 @@ public class AdminUserConfig {
 
             User admin = User.builder()
                     .username("admin")
-                    .password(passwordEncoder.encode("123456")) // senha codificada
+                    .password(passwordEncoder.encode("123456")) 
                     .role(Role.ROLE_ADMIN)
                     .fullName("Administrador do Sistema")
-                    .cpf("00000000000")          // coloque um CPF válido se quiser
+                    .cpf("00000000000")          
                     .phone("(62) 0000-0000")
                     .email("admin@pecafacil.local")
                     .address(address)
+                    .active(true) 
                     .build();
 
             userRepository.save(admin);
