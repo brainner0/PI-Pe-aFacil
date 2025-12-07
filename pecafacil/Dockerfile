@@ -18,4 +18,6 @@ COPY --from=build /app/target/pecafacil-0.0.1-SNAPSHOT.jar app.jar
 
 # Render define a variável de ambiente PORT; usamos ela aqui
 EXPOSE 8080
-ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
+#ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
+ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080} --spring.profiles.active=render"]
+
