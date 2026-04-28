@@ -28,34 +28,31 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService customUserDetailsService;
 
-   @Bean
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(cs -> cs.disable())
-                .cors(Customizer.withDefaults()) // Correto, usa a configuração que você definiu no CorsConfig
+                .cors(Customizer.withDefaults())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
-                        // ⚠️ LINHA CHAVE PARA CORREÇÃO DO CORS (LIBERA O PREFLIGHT)
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
-                        
-                        // Rotas Públicas (Login, Cadastro)
+                        // libera preflight CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // libera todas as rotas de autenticação
+                        .requestMatchers("/api/auth/**").permitAll()
+
+                        // rotas somente admin
                         .requestMatchers(
-                                "/api/auth/login",
-                                "/api/auth/register",
-                                "/api/auth/verificar-cpf/**",
-                                "/api/auth/verificar-username/**"
-                        ).permitAll()
+                                "/api/audit/**",
+                                "/api/movimentacoes/**",
+                                "/api/users/**"
+                        ).hasAuthority("ROLE_ADMIN")
 
-                        // === ADMIN ONLY ===
-                        .requestMatchers("/api/audit/**", "/api/movimentacoes/**")
-                                .hasAuthority("ROLE_ADMIN")
-
+                        // demais rotas precisam de token
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
-
-                // FILTRO JWT ANTES DO USERNAME/PASSWORD FILTER
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
