@@ -1,7 +1,7 @@
 package com.example.pecafacil.config;
 
-import com.example.pecafacil.security.JwtAuthenticationFilter;
 import com.example.pecafacil.security.CustomUserDetailsService;
+import com.example.pecafacil.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,30 +29,33 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final CorsConfigurationSource corsConfigurationSource;
 
+    private static final String[] PUBLIC_ROUTES = {
+            "/api/auth/**"
+    };
+
+    private static final String[] ADMIN_ROUTES = {
+            "/api/audit/**",
+            "/api/movimentacoes/**",
+            "/api/users/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(cs -> cs.disable())
+        return http
+                .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                        .requestMatchers("/api/auth/**").permitAll()
-
-                        .requestMatchers(
-                                "/api/audit/**",
-                                "/api/movimentacoes/**",
-                                "/api/users/**"
-                        ).hasAuthority("ROLE_ADMIN")
-
+                        .requestMatchers(PUBLIC_ROUTES).permitAll()
+                        .requestMatchers(ADMIN_ROUTES).hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
     @Bean
@@ -74,8 +77,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
-            throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration
+    ) throws Exception {
         return configuration.getAuthenticationManager();
     }
 }
